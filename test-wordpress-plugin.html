@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WP Org Chart Plugin - Browser Test</title>
+    
+    <!-- Bootstrap CSS for responsive grid classes -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        /* Test page styling */
+        body {
+            padding: 20px;
+            background: white;
+            color: black;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        /* Org Chart CSS - Refactored (no pseudo-elements for lines) */
+        .no-padding{
+          padding:0;
+        }
+        h5, h6 {
+            color: inherit;
+        }
+        img {
+            height: auto;
+            max-width: 100%;
+        }
+
+        /* ORG CHART  */
+        .org-chart .board {
+          margin: 0 auto;
+          display: inline-block;
+          position: relative;
+        }
+        .org-chart ul {
+          padding: 0;
+          margin: 30px 0;
+          list-style: none;
+        }
+        .org-chart ul li {
+          position: relative;
+        }
+        .org-chart ul li .member {
+          display: block;
+          border: none;
+          border-radius: 12pt;
+          text-align: center;
+          overflow: hidden;
+          text-decoration: none;
+          color: #CFB991;
+          font-size: 12px;
+          -webkit-transition: all linear .1s;
+          -moz-transition: all linear .1s;
+          transition: all linear .1s;
+          background: black;
+          padding: 15px 10px;
+          margin-bottom: 10px;
+        }
+        .org-chart ul li .member.erm-team {
+          background: #CFB991;
+          color: black;
+        }
+        .org-chart ul li .member img{
+          margin:0 auto 10px;
+        }
+
+        .org-chart ul.level2 {
+            margin: 40px auto;
+            padding: 0;
+        }
+
+        .org-chart .departments {
+          width: 100%;
+          display: inline-block;
+          clear: both;
+          margin-top: 40px;
+        }
+
+        .org-chart .department {
+            border-left: 2px solid #999;
+            width: 13%;
+            float: left;
+            margin: 0px 7px;
+        }
+
+        .org-chart .department li {
+          padding-left: 25px;
+          border-bottom: 2px solid #CE8948;
+          height: 80px;
+        }
+
+        /* SVG Lines Overlay */
+        .org-chart-lines {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+          z-index: 1;
+        }
+
+        /* MEDIA QUERIES */
+        @media all and (max-width: 767px) {
+          
+          .org-chart .departments {
+            margin-top: -17px;
+          }
+          
+          .org-chart ul.level3 li .member {
+            margin-bottom: 22px;
+            padding: 0;
+          }
+          
+          .org-chart ul.level3 .photo img {
+            margin: 0;
+          }
+          
+          .org-chart .board {
+            margin: 0px;
+            width: 100%;
+          }
+          
+          .org-chart .department {
+            float: none;
+            width: 100%;
+            margin-left: 0;
+            background: #F5EEC9;
+            margin-bottom: 40px;
+          }
+          
+          .org-chart .department:before {
+            content: "";
+            display: block;
+            position: absolute;
+            width: 15px;
+            height: 60px;
+            border-left: 2px solid #CE8948;
+            z-index: 1;
+            top: -45px;
+            left: 0%;
+            margin-left: -2px;
+          }
+          
+          .org-chart .department:after {
+            display: none;
+          }
+          
+          .org-chart .department:first-child:before {
+            display: none;
+          }
+          
+          .org-chart ul.level3 .info {
+            padding: 10% 0 0;
+          }
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <!-- WordPress Plugin Output Simulation -->
+        <div class="org-chart-wrapper" style="position: relative;">
+            <div class="row">
+                <div class="col-xs-12">
+                   <figure class="org-chart">
+                    <div class="board">
+                      <ul class="col-xs-12 level1">
+                        <li class="col-xs-6">
+                          <div class="member">
+                            <div class="info"><h5>Board of Trustees</h5></div>
+                          </div>  
+                        </li>
+                      </ul>
+                      <ul class="col-xs-12 level2">
+                        <li class="col-xs-6">
+                          <div class="member">
+                            <div class="info"><h5>University Executive Leadership</h5></div>
+                          </div>  
+                        </li>
+                      </ul>
+                      <ul class="departments level3">
+                        <li class="col-xs-6">
+                          <div class="member">
+                            <div class="info col-xs-12"><h5>Risk Recorder(s)</h5></div>
+                          </div>  
+                        </li>
+                        <li class="col-xs-6">
+                          <div class="member erm-team">
+                            <div class="info col-xs-12"><h5>ERM Team</h5></div>
+                          </div>  
+                        </li>
+                      </ul>
+                      <ul class="departments level4">
+                        <li class="col-xs-2">
+                          <div class="member">
+                            <div class="info col-xs-12"><h5>Directors</h5></div>
+                          </div>  
+                        </li>
+                        <li class="col-xs-2">
+                          <div class="member">
+                            <div class="info col-xs-12"><h5>Associate Directors</h5></div>
+                          </div>  
+                        </li>
+                        <li class="col-xs-2">
+                          <div class="member">
+                            <div class="info col-xs-12"><h5>Associate VP</h5></div>
+                          </div>  
+                        </li>
+                        <li class="col-xs-2">
+                          <div class="member">
+                            <div class="info col-xs-12"><h5>Associate Provost</h5></div>
+                          </div>  
+                        </li>
+                        <li class="col-xs-2">
+                          <div class="member">
+                            <div class="info col-xs-12"><h5>Deans</h5></div>
+                          </div>  
+                        </li>
+                        <li class="col-xs-2">
+                          <div class="member">
+                            <div class="info col-xs-12"><h5>Associate Provost</h5></div>
+                          </div>  
+                        </li>
+                      </ul>
+                    </div>
+                  </figure>
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 40px; text-align: center; color: #999;">
+            <p><strong>WordPress Plugin Test</strong></p>
+            <p>This is how the org chart will look when using the <code>[org_chart]</code> shortcode in WordPress.</p>
+            <p>Test responsive design by resizing your browser window.</p>
+            <p><strong>Features:</strong> SVG-based connecting lines, responsive design, center-to-center connections</p>
+        </div>
+    </div>
+    
+    <!-- jQuery for Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+    
+    <!-- WordPress Plugin JavaScript with SVG Lines -->
+    <script>
+    /**
+     * WP Org Chart JavaScript
+     * 
+     * Dynamic SVG line drawing for organizational chart connections
+     */
+
+    (function() {
+        'use strict';
+        
+        let resizeTimeout;
+        
+        function initOrgChart() {
+            console.log('WP Org Chart plugin loaded with SVG lines');
+            
+            // Wait for DOM to be fully loaded
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', drawOrgChartLines);
+            } else {
+                drawOrgChartLines();
+            }
+            
+            // Redraw lines on window resize
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(drawOrgChartLines, 100);
+            });
+        }
+        
+        function drawOrgChartLines() {
+            const orgChartWrapper = document.querySelector('.org-chart-wrapper');
+            if (!orgChartWrapper) {
+                console.log('Org chart wrapper not found');
+                return;
+            }
+            console.log('Org chart wrapper found, drawing lines...');
+            
+            // Remove existing SVG if it exists
+            const existingSvg = orgChartWrapper.querySelector('.org-chart-lines');
+            if (existingSvg) {
+                existingSvg.remove();
+            }
+            
+            // Create SVG overlay
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('class', 'org-chart-lines');
+            svg.setAttribute('width', '100%');
+            svg.setAttribute('height', '100%');
+            svg.style.position = 'absolute';
+            svg.style.top = '0';
+            svg.style.left = '0';
+            svg.style.pointerEvents = 'none';
+            svg.style.zIndex = '1';
+            
+            orgChartWrapper.appendChild(svg);
+            
+            // Get all levels
+            const level1 = orgChartWrapper.querySelector('ul.level1');
+            const level2 = orgChartWrapper.querySelector('ul.level2');
+            const level3 = orgChartWrapper.querySelector('ul.departments');
+            const level4 = orgChartWrapper.querySelector('ul.level4');
+            
+            console.log('Levels found:', {level1: !!level1, level2: !!level2, level3: !!level3, level4: !!level4});
+            
+            if (!level1 || !level2 || !level3) {
+                console.log('Missing required levels');
+                return;
+            }
+            
+            // Get wrapper bounds for coordinate calculation
+            const wrapperRect = orgChartWrapper.getBoundingClientRect();
+            
+            // Helper function to create a line
+            function createLine(x1, y1, x2, y2, stroke = '#000000', strokeWidth = '2') {
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x1);
+                line.setAttribute('y1', y1);
+                line.setAttribute('x2', x2);
+                line.setAttribute('y2', y2);
+                line.setAttribute('stroke', stroke);
+                line.setAttribute('stroke-width', strokeWidth);
+                return line;
+            }
+            
+            // Draw connections from level 1 to level 2 (simple vertical line)
+            const level1Member = level1.querySelector('li .member');
+            const level2Member = level2.querySelector('li .member');
+            
+            if (level1Member && level2Member) {
+                const level1Rect = level1Member.getBoundingClientRect();
+                const level2Rect = level2Member.getBoundingClientRect();
+                
+                const level1Bottom = level1Rect.bottom - wrapperRect.top;
+                const level2Top = level2Rect.top - wrapperRect.top;
+                const level1CenterX = level1Rect.left - wrapperRect.left + (level1Rect.width / 2);
+                const level2CenterX = level2Rect.left - wrapperRect.left + (level2Rect.width / 2);
+                
+                // Simple vertical line from level 1 to level 2
+                const verticalLine = createLine(level1CenterX, level1Bottom, level2CenterX, level2Top, '#000000');
+                svg.appendChild(verticalLine);
+            }
+            
+            // Draw connections from level 2 to level 3 (horizontal line + vertical connections)
+            const level3Members = level3.querySelectorAll('li .member');
+            
+            if (level2Member && level3Members.length > 0) {
+                const level2Rect = level2Member.getBoundingClientRect();
+                const level2Bottom = level2Rect.bottom - wrapperRect.top;
+                const level2CenterX = level2Rect.left - wrapperRect.left + (level2Rect.width / 2);
+                
+                // Draw horizontal line connecting level 3 members
+                if (level3Members.length > 1) {
+                    const firstMemberRect = level3Members[0].getBoundingClientRect();
+                    const lastMemberRect = level3Members[level3Members.length - 1].getBoundingClientRect();
+                    
+                    const lineStartX = firstMemberRect.left - wrapperRect.left + (firstMemberRect.width / 2);
+                    const lineEndX = lastMemberRect.left - wrapperRect.left + (lastMemberRect.width / 2);
+                    const lineY = firstMemberRect.top - wrapperRect.top - 20; // 20px above level 3
+                    
+                    const horizontalLine = createLine(lineStartX, lineY, lineEndX, lineY, '#000000');
+                    svg.appendChild(horizontalLine);
+                    
+                    // Draw vertical line from level 2 to horizontal line
+                    const verticalLine = createLine(level2CenterX, level2Bottom, level2CenterX, lineY, '#000000');
+                    svg.appendChild(verticalLine);
+                }
+                
+                // Draw vertical lines from horizontal line to each level 3 member
+                level3Members.forEach(member => {
+                    const memberRect = member.getBoundingClientRect();
+                    const memberTop = memberRect.top - wrapperRect.top;
+                    const memberCenterX = memberRect.left - wrapperRect.left + (memberRect.width / 2);
+                    const lineY = memberTop - 20; // 20px above level 3
+                    
+                    const verticalLine = createLine(memberCenterX, lineY, memberCenterX, memberTop, '#000000');
+                    svg.appendChild(verticalLine);
+                });
+            }
+            
+            // Draw connections from level 3 to level 4 (same pattern as level 2 to 3)
+            if (level4 && level3) {
+                const level3Members = level3.querySelectorAll('li .member');
+                const level4Members = level4.querySelectorAll('li .member');
+                
+                if (level3Members.length > 0 && level4Members.length > 0) {
+                    // Draw horizontal line connecting level 4 members
+                    if (level4Members.length > 1) {
+                        const firstMemberRect = level4Members[0].getBoundingClientRect();
+                        const lastMemberRect = level4Members[level4Members.length - 1].getBoundingClientRect();
+                        
+                        const lineStartX = firstMemberRect.left - wrapperRect.left + (firstMemberRect.width / 2);
+                        const lineEndX = lastMemberRect.left - wrapperRect.left + (lastMemberRect.width / 2);
+                        const lineY = firstMemberRect.top - wrapperRect.top - 20; // 20px above level 4
+                        
+                        const horizontalLine = createLine(lineStartX, lineY, lineEndX, lineY, '#000000');
+                        svg.appendChild(horizontalLine);
+                        
+                        // Draw vertical line from level 3 to horizontal line
+                        const firstLevel3Rect = level3Members[0].getBoundingClientRect();
+                        const level3Bottom = firstLevel3Rect.bottom - wrapperRect.top;
+                        const level3CenterX = firstLevel3Rect.left - wrapperRect.left + (firstLevel3Rect.width / 2);
+                        
+                        const verticalLine = createLine(level3CenterX, level3Bottom, level3CenterX, lineY, '#000000');
+                        svg.appendChild(verticalLine);
+                    }
+                    
+                    // Draw vertical lines from horizontal line to each level 4 member
+                    level4Members.forEach(member => {
+                        const memberRect = member.getBoundingClientRect();
+                        const memberTop = memberRect.top - wrapperRect.top;
+                        const memberCenterX = memberRect.left - wrapperRect.left + (memberRect.width / 2);
+                        const lineY = memberTop - 20; // 20px above level 4
+                        
+                        const verticalLine = createLine(memberCenterX, lineY, memberCenterX, memberTop, '#000000');
+                        svg.appendChild(verticalLine);
+                    });
+                }
+            }
+        }
+        
+        // Initialize when DOM is ready
+        initOrgChart();
+    })();
+    </script>
+</body>
+</html>

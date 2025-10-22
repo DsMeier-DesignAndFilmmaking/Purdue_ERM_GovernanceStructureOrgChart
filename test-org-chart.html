@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WP Org Chart - Browser Test</title>
+    
+    <!-- Bootstrap CSS for responsive grid classes -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Our org chart CSS -->
+    <link rel="stylesheet" href="css/org-chart.css">
+    
+    <style>
+        /* Additional test styles */
+        body {
+            padding: 20px;
+            background: #151515;
+            color: white;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .org-chart-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        
+        .org-chart-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .test-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: rgb(139, 123, 193);
+        }
+        
+        /* Horizontal line between top-level executives */
+        .org-chart ul.level1 {
+            position: relative;
+        }
+        .org-chart ul.level1:after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 25%;
+            right: 25%;
+            height: 2px;
+            background-color: #CE8948;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <!-- This is the exact HTML that the WordPress shortcode [org_chart] will output -->
+        <div class="org-chart-wrapper">
+            <div class="row">
+                <div class="col-xs-12">
+                   <figure class="org-chart">
+                <div class="board">
+                  <ul class="col-xs-12 level1">
+                    <li class="col-xs-6">
+                      <div class="member">
+                        <div class="info"><h5>John Smith</h5><h6>President</h6></div>
+                      </div>  
+                    </li>
+                    <li class="col-xs-6">
+                      <div class="member">
+                        <div class="info"><h5>Robert Johnson</h5><h6>CEO</h6></div>
+                      </div>  
+                    </li>
+                  </ul>
+                  <ul class="col-xs-12 level2">
+                    <li class="col-xs-4 col-xs-push-4">
+                      <div class="member">
+                        <div class="info"><h5>Jane Doe</h5><h6>Vice-President</h6></div>
+                      </div>  
+                    </li>
+                  </ul>
+                  <ul class="departments level3">
+                    <li class="col-xs-4">
+                      <div class="member">
+                        <div class="info col-xs-12"><h5>Sarah Wilson</h5><h6>Board Member</h6></div>
+                      </div>  
+                    </li>
+                    <li class="col-xs-4">
+                      <div class="member">
+                        <div class="info col-xs-12"><h5>David Brown</h5><h6>Board Member</h6></div>
+                      </div>  
+                    </li>
+                    <li class="col-xs-4">
+                      <div class="member">
+                        <div class="info col-xs-12"><h5>Lisa Davis</h5><h6>Board Member</h6></div>
+                      </div>  
+                    </li>
+                  </ul>
+                </div>
+              </figure>
+            </div>
+        </div>
+        </div>
+        
+        <div style="margin-top: 40px; text-align: center; color: #999;">
+            <p><strong>WordPress Plugin Test</strong></p>
+            <p>This is how the org chart will look when using the <code>[org_chart]</code> shortcode in WordPress.</p>
+            <p>Test responsive design by resizing your browser window.</p>
+        </div>
+    </div>
+    
+    <!-- jQuery for Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+    <!-- Our org chart JS -->
+    <script>
+    /**
+     * WP Org Chart JavaScript - Dynamic SVG connecting lines
+     * 
+     * Draws connecting lines between org chart nodes using SVG
+     */
+
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('WP Org Chart plugin loaded');
+        
+        function drawOrgChartLines() {
+            const wrapper = document.querySelector('.org-chart-wrapper');
+            const board = document.querySelector('.org-chart .board');
+            
+            if (!wrapper || !board) {
+                console.log('Org chart wrapper or board not found');
+                return;
+            }
+            
+            // Clear existing lines
+            const existingSvg = wrapper.querySelector('.org-chart-lines');
+            if (existingSvg) {
+                existingSvg.remove();
+            }
+            
+            // Create SVG overlay
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('class', 'org-chart-lines');
+            svg.style.position = 'absolute';
+            svg.style.top = '0';
+            svg.style.left = '0';
+            svg.style.width = '100%';
+            svg.style.height = '100%';
+            svg.style.pointerEvents = 'none';
+            svg.style.zIndex = '1';
+            
+            wrapper.appendChild(svg);
+            
+            // Get wrapper position for relative calculations
+            const wrapperRect = wrapper.getBoundingClientRect();
+            
+            // Draw horizontal line between top level (John Smith and Robert Johnson)
+            const topLevelItems = board.querySelectorAll('ul.level1 li');
+            if (topLevelItems.length >= 2) {
+                const firstRect = topLevelItems[0].getBoundingClientRect();
+                const lastRect = topLevelItems[1].getBoundingClientRect();
+                
+                const y = firstRect.top + (firstRect.height / 2) - wrapperRect.top;
+                const x1 = firstRect.right - wrapperRect.left;
+                const x2 = lastRect.left - wrapperRect.left;
+                
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x1);
+                line.setAttribute('y1', y);
+                line.setAttribute('x2', x2);
+                line.setAttribute('y2', y);
+                line.setAttribute('stroke', '#CE8948');
+                line.setAttribute('stroke-width', '2');
+                svg.appendChild(line);
+            }
+            
+            // Draw vertical line from top level to middle level (Jane Doe)
+            const middleLevelItems = board.querySelectorAll('ul.level2 li');
+            if (topLevelItems.length && middleLevelItems.length) {
+                const topCenter = topLevelItems[0].getBoundingClientRect();
+                const middleRect = middleLevelItems[0].getBoundingClientRect();
+                
+                const x = topCenter.left + (topCenter.width / 2) - wrapperRect.left;
+                const y1 = topCenter.bottom - wrapperRect.top;
+                const y2 = middleRect.top - wrapperRect.top;
+                
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x);
+                line.setAttribute('y1', y1);
+                line.setAttribute('x2', x);
+                line.setAttribute('y2', y2);
+                line.setAttribute('stroke', '#CE8948');
+                line.setAttribute('stroke-width', '2');
+                svg.appendChild(line);
+            }
+            
+            // Draw horizontal line above bottom level (board members)
+            const bottomLevelItems = board.querySelectorAll('ul.departments li');
+            if (bottomLevelItems.length >= 2) {
+                const firstRect = bottomLevelItems[0].getBoundingClientRect();
+                const lastRect = bottomLevelItems[bottomLevelItems.length - 1].getBoundingClientRect();
+                
+                const y = firstRect.top - wrapperRect.top;
+                const x1 = firstRect.left + (firstRect.width / 2) - wrapperRect.left;
+                const x2 = lastRect.left + (lastRect.width / 2) - wrapperRect.left;
+                
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x1);
+                line.setAttribute('y1', y);
+                line.setAttribute('x2', x2);
+                line.setAttribute('y2', y);
+                line.setAttribute('stroke', '#CE8948');
+                line.setAttribute('stroke-width', '2');
+                svg.appendChild(line);
+            }
+            
+            // Draw vertical lines from middle to each bottom member
+            if (middleLevelItems.length && bottomLevelItems.length) {
+                const middleRect = middleLevelItems[0].getBoundingClientRect();
+                const middleX = middleRect.left + (middleRect.width / 2) - wrapperRect.left;
+                const middleBottom = middleRect.bottom - wrapperRect.top;
+                
+                bottomLevelItems.forEach(function(bottomItem) {
+                    const bottomRect = bottomItem.getBoundingClientRect();
+                    const bottomX = bottomRect.left + (bottomRect.width / 2) - wrapperRect.left;
+                    const bottomTop = bottomRect.top - wrapperRect.top;
+                    
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', middleX);
+                    line.setAttribute('y1', middleBottom);
+                    line.setAttribute('x2', bottomX);
+                    line.setAttribute('y2', bottomTop);
+                    line.setAttribute('stroke', '#CE8948');
+                    line.setAttribute('stroke-width', '2');
+                    svg.appendChild(line);
+                });
+            }
+        }
+        
+        // Initialize lines
+        drawOrgChartLines();
+        
+        // Redraw on resize
+        let resizeTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(drawOrgChartLines, 100);
+        });
+    });
+    </script>
+</body>
+</html>

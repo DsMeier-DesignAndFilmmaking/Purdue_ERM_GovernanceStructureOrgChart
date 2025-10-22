@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WP Org Chart Plugin Test - With SVG Lines</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        body {
+            background: #ffffff;
+            padding: 20px;
+            font-family: 'Acumin Pro', Arial, sans-serif;
+        }
+        .no-padding{
+          padding:0;
+        }
+        h5, h6 {
+            color: rgb(255, 255, 255);
+            font-family: 'Acumin Pro', Arial, sans-serif;
+        }
+        img {
+            height: auto;
+            max-width: 100%;
+        }
+
+        /* ORG CHART  */
+        .org-chart .board {
+          margin: 0 auto;
+          display: inline-block;
+          position: relative;
+        }
+        .org-chart ul {
+          padding: 0;
+          margin: 30px 0;
+          list-style: none;
+        }
+
+        /* Level 1 blocks background color */
+        .org-chart ul.level1 li .member {
+          background: #D9D9D9;
+        }
+
+        /* Level 1 blocks text color */
+        .org-chart ul.level1 li .member h5,
+        .org-chart ul.level1 li .member h6 {
+          color: #000000;
+        }
+
+        /* Level 1 blocks extra padding to maintain height */
+        .org-chart ul.level1 li .member {
+          padding: 25px 10px;
+        }
+
+        /* H5 font size for all org chart blocks */
+        .org-chart ul li .member h5 {
+          font-size: 18px;
+        }
+        .org-chart ul li {
+          position: relative;
+        }
+        .org-chart ul li .member {
+          display: block;
+          border: none;
+          text-align: center;
+          overflow: hidden;
+          text-decoration: none;
+          color: black;
+          font-size: 14px;
+          -webkit-transition: all linear .1s;
+          -moz-transition: all linear .1s;
+          transition: all linear .1s;
+          background: #251234;
+          padding: 15px 10px;
+          margin-bottom: 10px;
+          border-radius: 12px;
+        }
+
+        .org-chart ul li .member img{
+          margin:0 auto 10px;
+        }
+
+        .org-chart ul.level2 {
+            margin: 40px auto;
+            padding: 0;
+        }
+
+        /* Level 2 block background color */
+        .org-chart ul.level2 li .member {
+          background: #000000;
+        }
+
+        /* Level 2 block text color */
+        .org-chart ul.level2 li .member h5,
+        .org-chart ul.level2 li .member h6 {
+          color: #CFB991;
+        }
+
+        .org-chart .departments {
+          width: 100%;
+          display: inline-block;
+          clear: both;
+          margin-top: 40px;
+        }
+
+        /* Level 3 blocks background color */
+        .org-chart .departments li .member {
+          background: #CFB991;
+        }
+
+        /* Level 3 blocks text color */
+        .org-chart .departments li .member h5,
+        .org-chart .departments li .member h6 {
+          color: #000000;
+        }
+
+            /* Level 3 blocks extra padding to match top blocks height */
+            .org-chart .departments li .member {
+              padding: 25px 10px;
+            }
+
+            /* Level 4 blocks background color */
+            .org-chart .programs li .member {
+              background: #CFB991;
+            }
+
+            /* Level 4 blocks text color */
+            .org-chart .programs li .member h5,
+            .org-chart .programs li .member h6 {
+              color: #000000;
+            }
+
+            /* Level 4 blocks extra padding to match other blocks height */
+            .org-chart .programs li .member {
+              padding: 25px 10px;
+              text-align: left;
+            }
+
+            /* Level 4 program list styling */
+            .org-chart .program-list {
+              list-style: none;
+              padding: 0;
+              margin: 10px 0 0 0;
+              text-align: left;
+            }
+
+            .org-chart .program-list li {
+              position: relative;
+              padding-left: 20px;
+              margin-bottom: 5px;
+              font-size: 12px;
+              color: #000000;
+            }
+
+            .org-chart .program-list li:before {
+              content: "•";
+              color: #000000;
+              font-weight: bold;
+              position: absolute;
+              left: 0;
+            }
+
+        /* Level 4 programs styling */
+        .org-chart .programs {
+          width: 100%;
+          display: inline-block;
+          clear: both;
+          margin-top: 40px;
+        }
+
+        .org-chart .programs li .member {
+          background: #F5F5F5;
+          padding: 20px 15px;
+          min-height: 200px;
+        }
+
+        .org-chart .programs li .member h5 {
+          color: #000000;
+          font-size: 16px;
+          margin-bottom: 15px;
+        }
+
+        .org-chart .program-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+
+        .org-chart .program-list li {
+          color: #333333;
+          font-size: 12px;
+          line-height: 1.4;
+          margin-bottom: 8px;
+          padding-left: 15px;
+          position: relative;
+        }
+
+        .org-chart .program-list li:before {
+          content: "•";
+          color: #000000;
+          font-weight: bold;
+          position: absolute;
+          left: 0;
+        }
+
+        .org-chart .department {
+            border-left: 2px solid #999;
+            width: 13%;
+            float: left;
+            margin: 0px 7px;
+        }
+
+        .org-chart .department li {
+          padding-left: 25px;
+          border-bottom: 2px solid #000000;
+          height: 80px;
+        }
+
+        /* Org Chart Wrapper */
+        .org-chart-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        /* SVG Lines Overlay */
+        .org-chart-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        /* MEDIA QUERIES */
+        @media all and (max-width: 767px) {
+          
+          .org-chart .departments {
+            margin-top: 20px;
+          }
+          
+          .org-chart ul.level3 li .member {
+            margin-bottom: 22px;
+            padding: 0;
+          }
+          
+          .org-chart ul.level3 .photo img {
+            margin: 0;
+          }
+          
+          .org-chart .board {
+            margin: 0px;
+            width: 100%;
+          }
+          
+          .org-chart .department {
+            float: none;
+            width: 100%;
+            margin-left: 0;
+            background: #F5EEC9;
+            margin-bottom: 40px;
+          }
+          
+          .org-chart ul.level3 .info {
+            padding: 10% 0 0;
+          }
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="org-chart-wrapper" style="position: relative;">
+            <div class="row">
+                <div class="col-xs-12">
+                   <figure class="org-chart">
+                    <div class="board">
+                      <ul class="col-xs-12 level1">
+                        <li class="col-xs-6">
+                          <div class="member">
+                            <div class="info"><h5>Executive Vice President & Treasurer</h5></div>
+                          </div>  
+                        </li>
+                        <li class="col-xs-6">
+                          <div class="member">
+                            <div class="info"><h5>Board of Trustees</h5></div>
+                          </div>  
+                        </li>
+                      </ul>
+                      <ul class="col-xs-12 level2">
+                        <li class="col-xs-4 col-xs-push-4">
+                          <div class="member">
+                            <div class="info"><h5>Madina Sabirova</h5><h6>Chief Audit and Risk Officer</h6></div>
+                          </div>  
+                        </li>
+                      </ul>
+                      <ul class="departments level3">
+                        <li class="col-xs-4">
+                          <div class="member">
+                            <div class="info col-xs-12"><h5>Internal Audit</h5></div>
+                          </div>  
+                        </li>
+                        <li class="col-xs-4">
+                          <div class="member">
+                            <div class="info col-xs-12"><h5>Enterprise Risk Management</h5></div>
+                          </div>  
+                        </li>
+                        <li class="col-xs-4">
+                          <div class="member">
+                            <div class="info col-xs-12"><h5>Operational Resilience</h5></div>
+                          </div>  
+                        </li>
+                      </ul>
+                      <ul class="programs level4">
+                        <li class="col-xs-4">
+                          <div class="member">
+                            <div class="info col-xs-12">
+                              <h5>Internal Audit Programs</h5>
+                              <ul class="program-list">
+                                <li>Risk-based Operations / IT / Compliance Audits</li>
+                                <li>University Hotline and Investigations</li>
+                                <li>Fraud Risk Management Program</li>
+                                <li>IT General Controls Program</li>
+                              </ul>
+                            </div>
+                          </div>  
+                        </li>
+                        <li class="col-xs-4">
+                          <div class="member">
+                            <div class="info col-xs-12">
+                              <h5>Enterprise Risk Management Programs</h5>
+                              <ul class="program-list">
+                                <li>Enterprise Risk Management Program</li>
+                              </ul>
+                            </div>
+                          </div>  
+                        </li>
+                        <li class="col-xs-4">
+                          <div class="member">
+                            <div class="info col-xs-12">
+                              <h5>Operational Resilience Programs</h5>
+                              <ul class="program-list">
+                                <li>International Standards Organization (ISO) Program</li>
+                                <li>Business Continuity Management Program</li>
+                              </ul>
+                            </div>
+                          </div>  
+                        </li>
+                      </ul>
+                    </div>
+                  </figure>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * WP Org Chart JavaScript
+         * 
+         * Dynamic SVG line drawing for organizational chart connections
+         */
+
+        (function() {
+            'use strict';
+            
+            let resizeTimeout;
+            
+            function initOrgChart() {
+                console.log('WP Org Chart plugin loaded with SVG lines');
+                
+                // Wait for DOM to be fully loaded
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', drawOrgChartLines);
+                } else {
+                    drawOrgChartLines();
+                }
+                
+                // Redraw lines on window resize
+                window.addEventListener('resize', function() {
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(drawOrgChartLines, 100);
+                });
+            }
+            
+            function drawOrgChartLines() {
+                const orgChartWrapper = document.querySelector('.org-chart-wrapper');
+                if (!orgChartWrapper) {
+                    console.log('Org chart wrapper not found');
+                    return;
+                }
+                console.log('Org chart wrapper found, drawing lines...');
+                
+                // Remove existing SVG if it exists
+                const existingSvg = orgChartWrapper.querySelector('.org-chart-lines');
+                if (existingSvg) {
+                    existingSvg.remove();
+                }
+                
+                // Create SVG overlay
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('class', 'org-chart-lines');
+                svg.setAttribute('width', '100%');
+                svg.setAttribute('height', '100%');
+                svg.style.position = 'absolute';
+                svg.style.top = '0';
+                svg.style.left = '0';
+                svg.style.pointerEvents = 'none';
+                svg.style.zIndex = '1';
+                
+                orgChartWrapper.appendChild(svg);
+                console.log('SVG created and appended');
+                
+                // Get all levels
+                const level1 = orgChartWrapper.querySelector('ul.level1');
+                const level2 = orgChartWrapper.querySelector('ul.level2');
+                const level3 = orgChartWrapper.querySelector('ul.departments');
+                
+                console.log('Levels found:', {level1: !!level1, level2: !!level2, level3: !!level3});
+                
+                if (!level1 || !level2 || !level3) {
+                    console.log('Missing required levels');
+                    return;
+                }
+                
+                // Get wrapper bounds for coordinate calculation
+                const wrapperRect = orgChartWrapper.getBoundingClientRect();
+                
+                // Draw connections from level 1 to level 2
+                const level1Members = level1.querySelectorAll('li .member');
+                const level2Member = level2.querySelector('li .member');
+                
+                if (level1Members.length > 0 && level2Member) {
+                    const level2Rect = level2Member.getBoundingClientRect();
+                    const level2Top = level2Rect.top - wrapperRect.top;
+                    const level2Left = level2Rect.left - wrapperRect.left;
+                    const level2CenterX = level2Left + (level2Rect.width / 2);
+                    
+                    // Draw horizontal line connecting level 1 members
+                    if (level1Members.length > 1) {
+                        const firstMemberRect = level1Members[0].getBoundingClientRect();
+                        const lastMemberRect = level1Members[level1Members.length - 1].getBoundingClientRect();
+                        
+                        const lineStartX = firstMemberRect.left - wrapperRect.left + (firstMemberRect.width / 2);
+                        const lineEndX = lastMemberRect.left - wrapperRect.left + (lastMemberRect.width / 2);
+                        const lineY = firstMemberRect.bottom - wrapperRect.top + 20; // 20px below level 1
+                        
+                        const horizontalLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        horizontalLine.setAttribute('x1', lineStartX);
+                        horizontalLine.setAttribute('y1', lineY);
+                        horizontalLine.setAttribute('x2', lineEndX);
+                        horizontalLine.setAttribute('y2', lineY);
+                        horizontalLine.setAttribute('stroke', '#000000');
+                        horizontalLine.setAttribute('stroke-width', '2');
+                        svg.appendChild(horizontalLine);
+                    }
+                    
+                    // Draw vertical line from horizontal line to level 2
+                    const firstMemberRect = level1Members[0].getBoundingClientRect();
+                    const lineY = firstMemberRect.bottom - wrapperRect.top + 20; // Same Y as horizontal line
+                    
+                    const verticalLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    verticalLine.setAttribute('x1', level2CenterX);
+                    verticalLine.setAttribute('y1', lineY);
+                    verticalLine.setAttribute('x2', level2CenterX);
+                    verticalLine.setAttribute('y2', level2Top);
+                    verticalLine.setAttribute('stroke', '#000000');
+                    verticalLine.setAttribute('stroke-width', '2');
+                    svg.appendChild(verticalLine);
+                    
+                    // Draw vertical lines from horizontal line to each level 1 member
+                    level1Members.forEach(member => {
+                        const memberRect = member.getBoundingClientRect();
+                        const memberBottom = memberRect.bottom - wrapperRect.top;
+                        const memberCenterX = memberRect.left - wrapperRect.left + (memberRect.width / 2);
+                        
+                        const verticalLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        verticalLine.setAttribute('x1', memberCenterX);
+                        verticalLine.setAttribute('y1', memberBottom);
+                        verticalLine.setAttribute('x2', memberCenterX);
+                        verticalLine.setAttribute('y2', lineY);
+                        verticalLine.setAttribute('stroke', '#000000');
+                        verticalLine.setAttribute('stroke-width', '2');
+                        svg.appendChild(verticalLine);
+                    });
+                }
+                
+                // Draw connections from level 2 to level 3
+                const level3Members = level3.querySelectorAll('li .member');
+                
+                if (level2Member && level3Members.length > 0) {
+                    const level2Rect = level2Member.getBoundingClientRect();
+                    const level2Bottom = level2Rect.bottom - wrapperRect.top;
+                    const level2CenterX = level2Rect.left - wrapperRect.left + (level2Rect.width / 2);
+                    
+                    // Draw horizontal line connecting level 3 members
+                    if (level3Members.length > 1) {
+                        const firstMemberRect = level3Members[0].getBoundingClientRect();
+                        const lastMemberRect = level3Members[level3Members.length - 1].getBoundingClientRect();
+                        
+                        const lineStartX = firstMemberRect.left - wrapperRect.left + (firstMemberRect.width / 2);
+                        const lineEndX = lastMemberRect.left - wrapperRect.left + (lastMemberRect.width / 2);
+                        const lineY = firstMemberRect.top - wrapperRect.top - 20; // 20px above level 3
+                        
+                        const horizontalLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        horizontalLine.setAttribute('x1', lineStartX);
+                        horizontalLine.setAttribute('y1', lineY);
+                        horizontalLine.setAttribute('x2', lineEndX);
+                        horizontalLine.setAttribute('y2', lineY);
+                        horizontalLine.setAttribute('stroke', '#000000');
+                        horizontalLine.setAttribute('stroke-width', '2');
+                        svg.appendChild(horizontalLine);
+                    }
+                    
+                    // Draw vertical line from level 2 to level 3
+                    const firstLevel3Rect = level3Members[0].getBoundingClientRect();
+                    const level3Top = firstLevel3Rect.top - wrapperRect.top;
+                    
+                    const verticalLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    verticalLine.setAttribute('x1', level2CenterX);
+                    verticalLine.setAttribute('y1', level2Bottom);
+                    verticalLine.setAttribute('x2', level2CenterX);
+                    verticalLine.setAttribute('y2', level3Top);
+                    verticalLine.setAttribute('stroke', '#000000');
+                    verticalLine.setAttribute('stroke-width', '2');
+                    svg.appendChild(verticalLine);
+                    
+                    // Draw vertical lines from horizontal line to each level 3 member
+                    level3Members.forEach(member => {
+                        const memberRect = member.getBoundingClientRect();
+                        const memberTop = memberRect.top - wrapperRect.top;
+                        const memberCenterX = memberRect.left - wrapperRect.left + (memberRect.width / 2);
+                        
+                        const verticalLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        verticalLine.setAttribute('x1', memberCenterX);
+                        verticalLine.setAttribute('y1', level3Top - 20);
+                        verticalLine.setAttribute('x2', memberCenterX);
+                        verticalLine.setAttribute('y2', memberTop);
+                        verticalLine.setAttribute('stroke', '#000000');
+                        verticalLine.setAttribute('stroke-width', '2');
+                        svg.appendChild(verticalLine);
+                    });
+                }
+            }
+            
+            // Initialize when DOM is ready
+            initOrgChart();
+        })();
+    </script>
+</body>
+</html>

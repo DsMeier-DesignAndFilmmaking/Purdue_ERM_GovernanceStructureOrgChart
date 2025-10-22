@@ -1,0 +1,174 @@
+body {
+    background: #ffffff;
+    font-family: 'Acumin Pro', Arial, sans-serif;
+}
+.no-padding{
+  padding:0;
+}
+h5, h6 {
+    color: rgb(139, 123, 193);
+    font-family: 'Acumin Pro', Arial, sans-serif;
+}
+img {
+    height: auto;
+    max-width: 100%;
+}
+
+/* ORG CHART  */
+.org-chart .board {
+  margin: 0 auto;
+  display: inline-block;
+  position: relative;
+}
+.org-chart ul {
+  padding: 0;
+  margin: 30px 0;
+  list-style: none;
+}
+
+/* Level 1 blocks background color */
+.org-chart ul.level1 li .member {
+  background: #D9D9D9;
+}
+
+/* Level 1 blocks text color */
+.org-chart ul.level1 li .member h5,
+.org-chart ul.level1 li .member h6 {
+  color: #000000;
+}
+
+/* Level 1 blocks extra padding to maintain height */
+.org-chart ul.level1 li .member {
+  padding: 25px 10px;
+}
+
+/* H5 font size for all org chart blocks */
+.org-chart ul li .member h5 {
+  font-size: 18px;
+}
+.org-chart ul li {
+  position: relative;
+}
+.org-chart ul li .member {
+  display: block;
+  border: none;
+  text-align: center;
+  overflow: hidden;
+  text-decoration: none;
+  color: black;
+  font-size: 14px;
+  -webkit-transition: all linear .1s;
+  -moz-transition: all linear .1s;
+  transition: all linear .1s;
+  background: #251234;
+  padding: 15px 10px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+}
+
+.org-chart ul li .member img{
+  margin:0 auto 10px;
+}
+
+.org-chart ul.level2 {
+    margin: 40px auto;
+    padding: 0;
+}
+
+/* Level 2 block background color */
+.org-chart ul.level2 li .member {
+  background: #000000;
+}
+
+/* Level 2 block text color */
+.org-chart ul.level2 li .member h5,
+.org-chart ul.level2 li .member h6 {
+  color: #CFB991;
+}
+
+.org-chart .departments {
+  width: 100%;
+  display: inline-block;
+  clear: both;
+  margin-top: 40px;
+}
+
+/* Level 3 blocks background color */
+.org-chart .departments li .member {
+  background: #CFB991;
+}
+
+/* Level 3 blocks text color */
+.org-chart .departments li .member h5,
+.org-chart .departments li .member h6 {
+  color: #000000;
+}
+
+/* Level 3 blocks extra padding to match top blocks height */
+.org-chart .departments li .member {
+  padding: 25px 10px;
+}
+
+.org-chart .department {
+    border-left: 2px solid #999;
+    width: 13%;
+    float: left;
+    margin: 0px 7px;
+}
+
+.org-chart .department li {
+  padding-left: 25px;
+  border-bottom: 2px solid #CE8948;
+  height: 80px;
+}
+
+/* Org Chart Wrapper */
+.org-chart-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* SVG Lines Overlay */
+.org-chart-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* MEDIA QUERIES */
+@media all and (max-width: 767px) {
+  
+  .org-chart .departments {
+    margin-top: 20px;
+  }
+  
+  .org-chart ul.level3 li .member {
+    margin-bottom: 22px;
+    padding: 0;
+  }
+  
+  .org-chart ul.level3 .photo img {
+    margin: 0;
+  }
+  
+  .org-chart .board {
+    margin: 0px;
+    width: 100%;
+  }
+  
+  .org-chart .department {
+    float: none;
+    width: 100%;
+    margin-left: 0;
+    background: #F5EEC9;
+    margin-bottom: 40px;
+  }
+  
+  .org-chart ul.level3 .info {
+    padding: 10% 0 0;
+  }
+}
