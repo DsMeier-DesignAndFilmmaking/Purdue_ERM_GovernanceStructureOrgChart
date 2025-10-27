@@ -69,6 +69,10 @@
         .org-chart ul li .member.erm-team {
           background: #CFB991;
           color: black;
+          width: auto;
+          min-width: fit-content;
+          padding: 15px 40px;
+          display: inline-block;
         }
         .org-chart ul li .member img{
           margin:0 auto 10px;
@@ -324,21 +328,22 @@
             // Get wrapper bounds for coordinate calculation
             const wrapperRect = orgChartWrapper.getBoundingClientRect();
             
-            // Define arrow marker
+            // Define arrow marker with enhanced visibility
             const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
             const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
             marker.setAttribute('id', 'arrowhead');
-            marker.setAttribute('markerWidth', '6');
-            marker.setAttribute('markerHeight', '4');
-            marker.setAttribute('refX', '5');
-            marker.setAttribute('refY', '2');
+            marker.setAttribute('markerWidth', '8');
+            marker.setAttribute('markerHeight', '6');
+            marker.setAttribute('refX', '6');
+            marker.setAttribute('refY', '3');
             marker.setAttribute('orient', 'auto');
             marker.setAttribute('markerUnits', 'strokeWidth');
             
             const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-            polygon.setAttribute('points', '0 0, 6 2, 0 4');
+            polygon.setAttribute('points', '0 0, 8 3, 0 6');
             polygon.setAttribute('fill', '#000000');
             polygon.setAttribute('stroke', '#000000');
+            polygon.setAttribute('stroke-width', '1');
             marker.appendChild(polygon);
             defs.appendChild(marker);
             svg.appendChild(defs);
@@ -384,8 +389,11 @@
                     const ermTeamCenterX = ermTeamRect.left - wrapperRect.left + (ermTeamRect.width / 2);
                     const ermTeamCenterY = ermTeamRect.top - wrapperRect.top + (ermTeamRect.height / 2);
                     
-                    // 90-degree connection: horizontal from ERM Team to Board of Trustees with arrow, vertical line normal
-                    const horizontalLine = createLineWithArrow(ermTeamCenterX, level1CenterY, level1CenterX - 30, level1CenterY, '#000000');
+                    // 90-degree connection: horizontal arrow from ERM Team to Board of Trustees, vertical line normal
+                    // Calculate the right edge of Board of Trustees block
+                    const boardRightEdge = level1Rect.right - wrapperRect.left;
+                    
+                    const horizontalLine = createLineWithArrow(ermTeamCenterX, level1CenterY, boardRightEdge, level1CenterY, '#000000', '2');
                     svg.appendChild(horizontalLine);
                     
                     const verticalLine = createLine(ermTeamCenterX, ermTeamCenterY, ermTeamCenterX, level1CenterY, '#000000');
@@ -406,7 +414,10 @@
                     const ermTeamCenterY = ermTeamRect.top - wrapperRect.top + (ermTeamRect.height / 2);
                     
                     // 90-degree connection: horizontal from ERM Team to University Executive Leadership with arrow, vertical line normal
-                    const horizontalLine = createLineWithArrow(ermTeamCenterX, level2CenterY, level2CenterX, level2CenterY, '#000000');
+                    // Calculate the right edge of University Executive Leadership block
+                    const universityRightEdge = level2Rect.right - wrapperRect.left;
+                    
+                    const horizontalLine = createLineWithArrow(ermTeamCenterX, level2CenterY, universityRightEdge, level2CenterY, '#000000', '2');
                     console.log('University Executive Leadership horizontal line created:', horizontalLine);
                     svg.appendChild(horizontalLine);
                     
@@ -469,6 +480,7 @@
                     const horizontalLineY = (firstMemberCenterY + secondMemberCenterY) / 2;
                     
                     const connectingLine = createLine(firstMemberCenterX, horizontalLineY, secondMemberCenterX, horizontalLineY, '#000000');
+                    connectingLine.setAttribute('stroke-dasharray', '5,5');
                     svg.appendChild(connectingLine);
                 }
             }
