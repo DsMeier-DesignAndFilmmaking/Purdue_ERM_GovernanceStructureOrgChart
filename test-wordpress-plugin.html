@@ -304,7 +304,7 @@
             svg.style.top = '0';
             svg.style.left = '0';
             svg.style.pointerEvents = 'none';
-            svg.style.zIndex = '1';
+            svg.style.zIndex = '-1';
             
             orgChartWrapper.appendChild(svg);
             
@@ -324,6 +324,25 @@
             // Get wrapper bounds for coordinate calculation
             const wrapperRect = orgChartWrapper.getBoundingClientRect();
             
+            // Define arrow marker
+            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+            marker.setAttribute('id', 'arrowhead');
+            marker.setAttribute('markerWidth', '6');
+            marker.setAttribute('markerHeight', '4');
+            marker.setAttribute('refX', '5');
+            marker.setAttribute('refY', '2');
+            marker.setAttribute('orient', 'auto');
+            marker.setAttribute('markerUnits', 'strokeWidth');
+            
+            const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            polygon.setAttribute('points', '0 0, 6 2, 0 4');
+            polygon.setAttribute('fill', '#000000');
+            polygon.setAttribute('stroke', '#000000');
+            marker.appendChild(polygon);
+            defs.appendChild(marker);
+            svg.appendChild(defs);
+            
             // Helper function to create a line
             function createLine(x1, y1, x2, y2, stroke = '#000000', strokeWidth = '2') {
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -336,22 +355,64 @@
                 return line;
             }
             
-            // Draw connections from level 1 to level 2 (simple vertical line)
+            // Helper function to create a line with arrow
+            function createLineWithArrow(x1, y1, x2, y2, stroke = '#000000', strokeWidth = '2') {
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x1);
+                line.setAttribute('y1', y1);
+                line.setAttribute('x2', x2);
+                line.setAttribute('y2', y2);
+                line.setAttribute('stroke', stroke);
+                line.setAttribute('stroke-width', strokeWidth);
+                line.setAttribute('marker-end', 'url(#arrowhead)');
+                return line;
+            }
+            
+            // Get level 1 and level 2 members for other connections
             const level1Member = level1.querySelector('li .member');
             const level2Member = level2.querySelector('li .member');
             
-            if (level1Member && level2Member) {
-                const level1Rect = level1Member.getBoundingClientRect();
-                const level2Rect = level2Member.getBoundingClientRect();
-                
-                const level1Bottom = level1Rect.bottom - wrapperRect.top;
-                const level2Top = level2Rect.top - wrapperRect.top;
-                const level1CenterX = level1Rect.left - wrapperRect.left + (level1Rect.width / 2);
-                const level2CenterX = level2Rect.left - wrapperRect.left + (level2Rect.width / 2);
-                
-                // Simple vertical line from level 1 to level 2
-                const verticalLine = createLine(level1CenterX, level1Bottom, level2CenterX, level2Top, '#000000');
-                svg.appendChild(verticalLine);
+            // Draw 90-degree arrow connection from Board of Trustees to ERM Team
+            if (level1Member && level3) {
+                const level3Members = level3.querySelectorAll('li .member');
+                if (level3Members.length >= 2) {
+                    const level1Rect = level1Member.getBoundingClientRect();
+                    const ermTeamRect = level3Members[1].getBoundingClientRect(); // ERM Team is index 1
+                    
+                    const level1CenterX = level1Rect.left - wrapperRect.left + (level1Rect.width / 2);
+                    const level1CenterY = level1Rect.top - wrapperRect.top + (level1Rect.height / 2);
+                    const ermTeamCenterX = ermTeamRect.left - wrapperRect.left + (ermTeamRect.width / 2);
+                    const ermTeamCenterY = ermTeamRect.top - wrapperRect.top + (ermTeamRect.height / 2);
+                    
+                    // 90-degree connection: horizontal from ERM Team to Board of Trustees with arrow, vertical line normal
+                    const horizontalLine = createLineWithArrow(ermTeamCenterX, level1CenterY, level1CenterX - 30, level1CenterY, '#000000');
+                    svg.appendChild(horizontalLine);
+                    
+                    const verticalLine = createLine(ermTeamCenterX, ermTeamCenterY, ermTeamCenterX, level1CenterY, '#000000');
+                    svg.appendChild(verticalLine);
+                }
+            }
+            
+            // Draw 90-degree arrow connection from University Executive Leadership to ERM Team
+            if (level2Member && level3) {
+                const level3Members = level3.querySelectorAll('li .member');
+                if (level3Members.length >= 2) {
+                    const level2Rect = level2Member.getBoundingClientRect();
+                    const ermTeamRect = level3Members[1].getBoundingClientRect(); // ERM Team is index 1
+                    
+                    const level2CenterX = level2Rect.left - wrapperRect.left + (level2Rect.width / 2);
+                    const level2CenterY = level2Rect.top - wrapperRect.top + (level2Rect.height / 2);
+                    const ermTeamCenterX = ermTeamRect.left - wrapperRect.left + (ermTeamRect.width / 2);
+                    const ermTeamCenterY = ermTeamRect.top - wrapperRect.top + (ermTeamRect.height / 2);
+                    
+                    // 90-degree connection: horizontal from ERM Team to University Executive Leadership with arrow, vertical line normal
+                    const horizontalLine = createLineWithArrow(ermTeamCenterX, level2CenterY, level2CenterX, level2CenterY, '#000000');
+                    console.log('University Executive Leadership horizontal line created:', horizontalLine);
+                    svg.appendChild(horizontalLine);
+                    
+                    const verticalLine = createLine(ermTeamCenterX, ermTeamCenterY, ermTeamCenterX, level2CenterY, '#000000');
+                    svg.appendChild(verticalLine);
+                }
             }
             
             // Draw connections from level 2 to level 3 (horizontal line + vertical connections)
@@ -362,33 +423,54 @@
                 const level2Bottom = level2Rect.bottom - wrapperRect.top;
                 const level2CenterX = level2Rect.left - wrapperRect.left + (level2Rect.width / 2);
                 
-                // Draw horizontal line connecting level 3 members
-                if (level3Members.length > 1) {
-                    const firstMemberRect = level3Members[0].getBoundingClientRect();
-                    const lastMemberRect = level3Members[level3Members.length - 1].getBoundingClientRect();
+                // Draw bi-directional arrow line connecting University Executive Leadership with Risk Recorder(s)
+                if (level3Members.length > 0) {
+                    const firstMemberRect = level3Members[0].getBoundingClientRect(); // Risk Recorder(s)
                     
-                    const lineStartX = firstMemberRect.left - wrapperRect.left + (firstMemberRect.width / 2);
-                    const lineEndX = lastMemberRect.left - wrapperRect.left + (lastMemberRect.width / 2);
-                    const lineY = firstMemberRect.top - wrapperRect.top - 20; // 20px above level 3
+                    const riskRecorderCenterX = firstMemberRect.left - wrapperRect.left + (firstMemberRect.width / 2);
+                    const riskRecorderTop = firstMemberRect.top - wrapperRect.top;
                     
-                    const horizontalLine = createLine(lineStartX, lineY, lineEndX, lineY, '#000000');
-                    svg.appendChild(horizontalLine);
+                    // Draw vertical line from level 2 directly to Risk Recorder(s) block with arrow pointing to Risk Recorder(s)
+                    const verticalLineDown = createLineWithArrow(level2CenterX, level2Bottom, riskRecorderCenterX, riskRecorderTop, '#000000');
+                    svg.appendChild(verticalLineDown);
                     
-                    // Draw vertical line from level 2 to horizontal line
-                    const verticalLine = createLine(level2CenterX, level2Bottom, level2CenterX, lineY, '#000000');
-                    svg.appendChild(verticalLine);
+                    // Draw vertical line from Risk Recorder(s) block to level 2 with arrow pointing to University Executive Leadership
+                    const verticalLineUp = createLineWithArrow(riskRecorderCenterX, riskRecorderTop, level2CenterX, level2Bottom, '#000000');
+                    svg.appendChild(verticalLineUp);
                 }
                 
-                // Draw vertical lines from horizontal line to each level 3 member
-                level3Members.forEach(member => {
+                // Draw vertical lines from each level 3 member to horizontal line (except ERM Team and Risk Recorder(s))
+                level3Members.forEach((member, index) => {
+                    // Skip ERM Team block (index 1) and Risk Recorder(s) block (index 0) - they have direct connections instead
+                    if (index === 1 || index === 0) return;
+                    
                     const memberRect = member.getBoundingClientRect();
                     const memberTop = memberRect.top - wrapperRect.top;
                     const memberCenterX = memberRect.left - wrapperRect.left + (memberRect.width / 2);
                     const lineY = memberTop - 20; // 20px above level 3
                     
-                    const verticalLine = createLine(memberCenterX, lineY, memberCenterX, memberTop, '#000000');
+                    const verticalLine = createLineWithArrow(memberCenterX, memberTop, memberCenterX, lineY, '#000000');
                     svg.appendChild(verticalLine);
                 });
+                
+                // Draw horizontal line connecting Risk Recorder(s) and ERM Team blocks at their vertical centers
+                if (level3Members.length >= 2) {
+                    const firstMemberRect = level3Members[0].getBoundingClientRect(); // Risk Recorder(s)
+                    const secondMemberRect = level3Members[1].getBoundingClientRect(); // ERM Team
+                    
+                    const firstMemberCenterX = firstMemberRect.left - wrapperRect.left + (firstMemberRect.width / 2);
+                    const secondMemberCenterX = secondMemberRect.left - wrapperRect.left + (secondMemberRect.width / 2);
+                    
+                    // Calculate vertical centers of both blocks
+                    const firstMemberCenterY = firstMemberRect.top - wrapperRect.top + (firstMemberRect.height / 2);
+                    const secondMemberCenterY = secondMemberRect.top - wrapperRect.top + (secondMemberRect.height / 2);
+                    
+                    // Use the average Y position for the horizontal line
+                    const horizontalLineY = (firstMemberCenterY + secondMemberCenterY) / 2;
+                    
+                    const connectingLine = createLine(firstMemberCenterX, horizontalLineY, secondMemberCenterX, horizontalLineY, '#000000');
+                    svg.appendChild(connectingLine);
+                }
             }
             
             // Draw connections from level 3 to level 4 (same pattern as level 2 to 3)
@@ -409,23 +491,23 @@
                         const horizontalLine = createLine(lineStartX, lineY, lineEndX, lineY, '#000000');
                         svg.appendChild(horizontalLine);
                         
-                        // Draw vertical line from level 3 to horizontal line
+                        // Draw vertical line from horizontal line to level 3
                         const firstLevel3Rect = level3Members[0].getBoundingClientRect();
                         const level3Bottom = firstLevel3Rect.bottom - wrapperRect.top;
                         const level3CenterX = firstLevel3Rect.left - wrapperRect.left + (firstLevel3Rect.width / 2);
                         
-                        const verticalLine = createLine(level3CenterX, level3Bottom, level3CenterX, lineY, '#000000');
+                        const verticalLine = createLineWithArrow(level3CenterX, lineY, level3CenterX, level3Bottom, '#000000');
                         svg.appendChild(verticalLine);
                     }
                     
-                    // Draw vertical lines from horizontal line to each level 4 member
+                    // Draw vertical lines from each level 4 member to horizontal line
                     level4Members.forEach(member => {
                         const memberRect = member.getBoundingClientRect();
                         const memberTop = memberRect.top - wrapperRect.top;
                         const memberCenterX = memberRect.left - wrapperRect.left + (memberRect.width / 2);
                         const lineY = memberTop - 20; // 20px above level 4
                         
-                        const verticalLine = createLine(memberCenterX, lineY, memberCenterX, memberTop, '#000000');
+                        const verticalLine = createLineWithArrow(memberCenterX, lineY, memberCenterX, memberTop, '#000000');
                         svg.appendChild(verticalLine);
                     });
                 }
@@ -433,7 +515,7 @@
         }
         
         // Initialize when DOM is ready
-        initOrgChart();
+            initOrgChart();
     })();
     </script>
 </body>
